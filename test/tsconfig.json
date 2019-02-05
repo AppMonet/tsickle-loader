@@ -1,0 +1,9 @@
+{
+  "include": [
+    "./examples/**/*.ts"
+  ],
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+  }
+}

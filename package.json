@@ -1,0 +1,47 @@
+{
+  "name": "@monet/tsickle-loader",
+  "version": "0.1.0",
+  "description": "tsickle webpack loader",
+  "main": "index.js",
+  "repository": "github.com/AppMonet/tickle-loader",
+  "author": "Nick Jacob <nickbjacob@gmail.com>",
+  "license": "MIT",
+  "sideEffects": false,
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "peerDependencies": {
+    "typescript": "~3.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-typescript": "^7.1.0",
+    "@babel/runtime": "^7.3.1",
+    "babel-jest": "^24.1.0",
+    "babel-loader": "^8.0.5",
+    "closure-webpack-plugin": "^2.0.0-rc.17",
+    "eslint": "^5.13.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.2.2",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "google-closure-compiler": "^20181231.0.0-webpack-beta",
+    "typescript": "~3.3.1",
+    "jest": "^24.1.0",
+    "memory-fs": "^0.4.1",
+    "ts-loader": "^5.3.3",
+    "webpack": "^4.29.1"
+  },
+  "dependencies": {
+    "fs-extra": "^7.0.1",
+    "tsickle": "^0.34.3"
+  }
+}
