@@ -83,7 +83,7 @@ module.exports = function (source) {
 
   fs.ensureDirSync(externDir)
   if (fs.existsSync(externFile)) {
-    fs.unlinkSync(externFile)
+    // fs.unlinkSync(externFile)
   }
 
   const configFileName =
