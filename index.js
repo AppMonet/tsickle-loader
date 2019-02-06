@@ -79,6 +79,8 @@ module.exports = function (source) {
   const externDir =
     options.externDir != null ? options.externDir : 'dist/externs'
   const externFile = path.resolve(externDir, 'externs.js')
+  console.info('writing externs to %s', externFile)
+
   fs.ensureDirSync(externDir)
   if (fs.existsSync(externFile)) {
     fs.unlinkSync(externFile)
