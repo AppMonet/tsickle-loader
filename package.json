@@ -1,6 +1,6 @@
 {
   "name": "@monet/tsickle-loader",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "description": "tsickle webpack loader",
   "main": "index.js",
   "repository": "github.com/AppMonet/tickle-loader",

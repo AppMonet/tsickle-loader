@@ -5,7 +5,7 @@ import ComplexObject from "./complex-object";
 
 const win = window as any;
 
-declare interface InputOptions {
+export declare interface InputOptions {
   count: number;
   version: number;
   name: string;

@@ -31,6 +31,7 @@ const fixExtern = (extern) => {
   }
 
   const fixed = extern.replace(/var\s*=\s*{};\s*$/gm, '')
+    .replace(/^\.(\w+\s+=\s+function.+$)/gm, 'var $1')
     .replace(/^\./gm, '')
 
   return fixed

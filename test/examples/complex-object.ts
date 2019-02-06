@@ -1,4 +1,4 @@
-declare interface ComplexObjectOpt {
+export declare interface ComplexObjectOpt {
   name: string;
   version: number;
 }
