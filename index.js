@@ -1,8 +1,6 @@
 const fs = require('fs-extra')
 const path = require('path')
-const {
-  getOptions
-} = require('loader-utils')
+const { getOptions } = require('loader-utils')
 const validateOptions = require('schema-utils')
 const tsickle = require('tsickle')
 const ts = require('typescript')
@@ -11,11 +9,14 @@ const optionsSchema = {
   type: 'object',
   properties: {
     tsconfig: {
-      anyOf: [{
-        type: 'string'
-      }, {
-        type: 'boolean'
-      }]
+      anyOf: [
+        {
+          type: 'string'
+        },
+        {
+          type: 'boolean'
+        }
+      ]
     },
     externDir: {
       type: 'string'
@@ -26,11 +27,16 @@ const optionsSchema = {
 const defaultConfigFilename = 'tsconfig.json'
 const LOADER_NAME = 'tsickle-loader'
 
+function formatDiagnostics (issues) {
+  console.info(issues)
+}
+
 module.exports = function (source) {
   const options = getOptions(this)
   validateOptions(optionsSchema, options, LOADER_NAME)
 
-  const externDir = options.externDir != null ? options.externDir : 'dist/externs'
+  const externDir =
+    options.externDir != null ? options.externDir : 'dist/externs'
   const externFile = path.resolve(externDir, 'externs.js')
   fs.ensureDirSync(externDir)
 
@@ -56,7 +62,7 @@ module.exports = function (source) {
   const diagnostics = ts.getPreEmitDiagnostics(program)
 
   if (diagnostics.length > 0) {
-    this.emitError(tsickle.formatDiagnostics(diagnostics))
+    this.emitError(formatDiagnostics(diagnostics))
     return
   }
 
@@ -74,7 +80,7 @@ module.exports = function (source) {
     typeBlackListPaths: new Set(),
     untyped: false,
     logWarning: warning =>
-      console.error('[tsickle]', tsickle.formatDiagnostics([warning])),
+      console.error('[tsickle]', formatDiagnostics([warning])),
     noForwardDeclare: true
   }
 

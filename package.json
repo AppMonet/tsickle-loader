@@ -1,6 +1,6 @@
 {
   "name": "@monet/tsickle-loader",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "tsickle webpack loader",
   "main": "index.js",
   "repository": "github.com/AppMonet/tickle-loader",
@@ -14,7 +14,8 @@
     "testEnvironment": "node"
   },
   "peerDependencies": {
-    "typescript": "~3.3.1"
+    "typescript": "~3.3.1",
+    "webpack": "^4.29.1"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
