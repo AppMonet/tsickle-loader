@@ -26,9 +26,38 @@ const optionsSchema = {
 
 const defaultConfigFilename = 'tsconfig.json'
 const LOADER_NAME = 'tsickle-loader'
+const ResetColor = '\x1b[0m'
+const ErrorColor = '\x1b[41m\x1b[37m'
+const WarningColor = '\x1b[43m\x1b[30m'
 
-function formatDiagnostics (issues) {
-  console.info(issues)
+function formatDiagnostics (issues, type) {
+  type = type || 'error'
+  issues.forEach(issue => {
+    const code = issue.file.text
+    const endIssue = issue.start + issue.length
+
+    const color = type === 'error' ? ErrorColor : WarningColor
+    const colorized =
+      '\t' +
+      (
+        code.slice(Math.max(issue.start - 80, 0), issue.start) +
+        color +
+        code.slice(issue.start, issue.start + issue.length) +
+        ResetColor +
+        code.slice(endIssue, endIssue + 80)
+      ).replace(/\n/g, '\n\t')
+
+    const msg = `[${type}] - ${issue.file.path}`
+    const line = '-'.repeat(msg.length)
+
+    console.log(msg)
+    const space = Math.max(msg.length - (issue.messageText.length + 3), 0)
+
+    console.log(issue.messageText + ' '.repeat(space) + '👇👇👇\n')
+    console.log(line)
+    console.log(colorized)
+    console.log(line)
+  })
 }
 
 module.exports = function (source) {
@@ -79,8 +108,7 @@ module.exports = function (source) {
     transformTypesToClosure: true,
     typeBlackListPaths: new Set(),
     untyped: false,
-    logWarning: warning =>
-      console.error('[tsickle]', formatDiagnostics([warning])),
+    logWarning: warning => formatDiagnostics([warning], 'warning'),
     noForwardDeclare: true
   }
 
