@@ -31,7 +31,7 @@ test('It will correctly collapse unnecessary modules (tree shaking)', async () =
 })
 
 test('will work with closure compiler plugin', async () => {
-  const externDir = path.resolve(__dirname, 'tmp', 'externs')
+  const externDir = path.resolve(__dirname, 'tmp', 'externs-' + Math.floor(Math.random() * 10))
   fs.ensureFileSync(path.resolve(externDir, 'externs.js'))
 
   const rules = [{
@@ -48,7 +48,7 @@ test('will work with closure compiler plugin', async () => {
     mode: 'STANDARD',
     childCompilations: true
   }, {
-    // externs: [path.resolve(externDir, 'externs.js')],
+    externs: [path.resolve(externDir, 'externs.js')],
     // language_in: 'ECMASCRIPT6',
     jscomp_off: 'es5Strict',
     jscompOff: 'es5Strict',

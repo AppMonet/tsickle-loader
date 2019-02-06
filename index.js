@@ -1,6 +1,8 @@
 const fs = require('fs-extra')
 const path = require('path')
-const { getOptions } = require('loader-utils')
+const {
+  getOptions
+} = require('loader-utils')
 const validateOptions = require('schema-utils')
 const tsickle = require('tsickle')
 const ts = require('typescript')
@@ -9,8 +11,7 @@ const optionsSchema = {
   type: 'object',
   properties: {
     tsconfig: {
-      anyOf: [
-        {
+      anyOf: [{
           type: 'string'
         },
         {
@@ -24,13 +25,24 @@ const optionsSchema = {
   }
 }
 
+const fixExtern = (extern) => {
+  if (extern == null) {
+    return null
+  }
+
+  const fixed = extern.replace(/var\s*=\s*{};\s*$/gm, '')
+    .replace(/^\./gm, '')
+
+  return fixed
+}
+
 const defaultConfigFilename = 'tsconfig.json'
 const LOADER_NAME = 'tsickle-loader'
 const ResetColor = '\x1b[0m'
 const ErrorColor = '\x1b[41m\x1b[37m'
 const WarningColor = '\x1b[43m\x1b[30m'
 
-function formatDiagnostics (issues, type) {
+const formatDiagnostics = (issues, type) => {
   type = type || 'error'
   issues.forEach(issue => {
     const code = issue.file.text
@@ -68,6 +80,9 @@ module.exports = function (source) {
     options.externDir != null ? options.externDir : 'dist/externs'
   const externFile = path.resolve(externDir, 'externs.js')
   fs.ensureDirSync(externDir)
+  if (fs.existsSync(externFile)) {
+    fs.unlinkSync(externFile)
+  }
 
   const configFileName =
     options.tsconfig != null ? options.tsconfig : defaultConfigFilename
@@ -108,7 +123,7 @@ module.exports = function (source) {
     transformTypesToClosure: true,
     typeBlackListPaths: new Set(),
     untyped: false,
-    logWarning: warning => formatDiagnostics([warning], 'warning'),
+    logWarning: warning => formatDiagnostics([warning]),
     noForwardDeclare: true
   }
 
@@ -130,7 +145,7 @@ module.exports = function (source) {
       const extern = result.externs[tsKey]
 
       if (extern) {
-        fs.appendFileSync(externFile, extern)
+        fs.appendFileSync(externFile, fixExtern(extern))
       }
 
       let resultText = jsFiles[key]
