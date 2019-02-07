@@ -9,6 +9,12 @@ export declare interface InputOptions {
   count: number;
   version: number;
   name: string;
+  handler: (objects: InputArg[]) => ComplexObject;
+}
+
+declare interface InputArg {
+  object: ComplexObject;
+  name: string;
 }
 
 class MySimpleClass {

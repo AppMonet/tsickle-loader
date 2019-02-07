@@ -34,7 +34,9 @@ const fixExtern = (extern) => {
     .replace(/^\.(\w+\s+=\s+function.+$)/gm, 'var $1')
     .replace(/^\./gm, '')
 
-  return fixed
+  return fixed.replace(
+    /([<{])!\.(\w)/gm, '$1!$2'
+  )
 }
 
 const defaultConfigFilename = 'tsconfig.json'
