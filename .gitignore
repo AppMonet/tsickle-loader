@@ -1,3 +1,5 @@
 node_modules
 dist
 test/tmp
+lib
+yarn-error.log

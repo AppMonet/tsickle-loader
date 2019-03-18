@@ -35,7 +35,7 @@ module.exports = (fixture, options = {}) => {
         {
           test: /\.ts$/,
           use: {
-            loader: path.resolve(__dirname, '../index.js'),
+            loader: path.resolve(__dirname, '../lib/index.js'),
             options: {
               tsconfig: path.resolve(__dirname, options.tsconfig != null ? options.tsconfig : 'tsconfig.json'),
               externDir: options.externDir

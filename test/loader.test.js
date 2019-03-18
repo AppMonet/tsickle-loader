@@ -9,6 +9,15 @@ test('Converts a simple es6 function', async () => {
   expect(output).toContain('@return {string}')
 })
 
+test('failed to files with invalid imports', async () => {
+  try {
+    await compiler('/examples/invalid-import.ts')
+  } catch (e) {
+    console.info(e)
+    expect(e).toBeTruthy()
+  }
+})
+
 test('Handles imports across files', async () => {
   const [output] = await compiler('examples/single-import.ts')
   expect(output).toContain('importable(count)')
@@ -65,6 +74,5 @@ test('will work with closure compiler plugin', async () => {
     minimizer,
     externDir
   })
-
   expect(output).toBeTruthy()
-})
+}, 15e3) // this can be *very* slow
