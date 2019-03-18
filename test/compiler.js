@@ -23,15 +23,6 @@ module.exports = (fixture, options = {}) => {
     module: {
       rules: [
         ...(options.prerules || []),
-        // {
-        //   test: /\.ts$/,
-        //   use: {
-        //     loader: 'babel-loader',
-        //     options: {
-        //       plugins: ['@babel/plugin-transform-modules-commonjs']
-        //     }
-        //   }
-        // },
         {
           test: /\.ts$/,
           use: {
