@@ -9,8 +9,9 @@ export const fixCode = (code: string): string => {
       /(?:const|var)\s*.*tsickle_forward_declare_.*\s*=\s*goog\.forwardDeclare.*/g,
       ""
     )
-    .replace(/goog\.require.*/g, "")
-    .replace(/tsickle_forward_declare_\d\./g, "");
+    .replace(/!\.(\w)/gm, "!$1")
+    .replace(/goog\.require.*/gm, "")
+    .replace(/tsickle_forward_declare_\d\./gm, "");
 };
 
 /**
@@ -26,6 +27,7 @@ export const fixExtern = (extern: string | null): string => {
 
   const fixed = extern
     .replace(/var\s*=\s*{};\s*$/gm, "")
+    .replace(/!\.(\w)/gm, "!$1")
     .replace(/^\.(\w+\s+=\s+function.+$)/gm, "var $1")
     .replace(/^\./gm, "");
 

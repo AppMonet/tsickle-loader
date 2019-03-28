@@ -40,7 +40,7 @@ module.exports = (fixture, options = {}) => {
     ],
     optimization: {
       minimize: true,
-      minimizer: options.minimizer,
+      // minimizer: options.minimizer,
       usedExports: true,
       splitChunks: {
         minSize: 0

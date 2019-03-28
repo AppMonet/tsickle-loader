@@ -6,17 +6,20 @@ export declare interface PublicAPI {
 class Timer {
   private intervalHandle: number | null;
 
-  constructor(private interval: number, private callback: () => void) {}
+  constructor(private timeInterval: number, private callback: () => void) {}
 
-  public cancel() {
+  cancelHandle() {
     if (this.intervalHandle != null) {
       clearInterval(this.intervalHandle);
     }
   }
 
-  public start() {
-    this.cancel();
-    this.intervalHandle = window.setInterval(() => this.run(), this.interval);
+  startHandle() {
+    this.cancelHandle();
+    this.intervalHandle = window.setInterval(
+      () => this.run(),
+      this.timeInterval
+    );
   }
 
   private run() {
@@ -32,9 +35,9 @@ const instance = new Timer(1e3, () => console.info("doing something"));
 
 (window as any)["mySDK"] = {
   start() {
-    instance.start();
+    instance.startHandle();
   },
   stop() {
-    instance.cancel();
+    instance.cancelHandle();
   }
 };

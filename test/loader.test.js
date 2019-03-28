@@ -67,12 +67,14 @@ test('will work with closure compiler plugin', async () => {
     compilation_level: 'ADVANCED'
   })]
 
-  const [output] = await compiler('examples/dual-import.ts', {
+  const [output] = await compiler('examples/complex-example.ts', {
     tsconfig: path.resolve(__dirname, 'tsconfig.explicit.json'), // use es2015 modules
     mode: 'production',
     rules,
     minimizer,
     externDir
   })
+
+  fs.writeFileSync('./complex-example.js', output)
   expect(output).toBeTruthy()
 }, 15e3) // this can be *very* slow
