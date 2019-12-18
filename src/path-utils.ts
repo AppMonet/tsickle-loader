@@ -1,5 +1,5 @@
-const JS_RXP = /\.js$/;
-const TS_RXP = /\.ts$/;
+const JS_RXP = /\.jsx?$/;
+const TS_RXP = /\.tsx?$/;
 
 export const jsToTS = (path: string | null) =>
   path != null ? path.replace(JS_RXP, ".ts") : "";

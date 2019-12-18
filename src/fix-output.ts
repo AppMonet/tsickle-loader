@@ -28,6 +28,7 @@ export const fixExtern = (extern: string | null): string => {
   const fixed = extern
     .replace(/var\s*=\s*{};\s*$/gm, "")
     .replace(/!\.(\w)/gm, "!$1")
+    .replace(/^\.(\w+\s+=\s+{}\s*;?\s*$)/gm, "var $1")
     .replace(/^\.(\w+\s+=\s+function.+$)/gm, "var $1")
     .replace(/^\./gm, "");
 

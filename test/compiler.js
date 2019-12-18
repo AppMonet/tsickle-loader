@@ -24,7 +24,7 @@ module.exports = (fixture, options = {}) => {
       rules: [
         ...(options.prerules || []),
         {
-          test: /\.ts$/,
+          test: /\.tsx?$/,
           use: {
             loader: path.resolve(__dirname, '../lib/index.js'),
             options: {
