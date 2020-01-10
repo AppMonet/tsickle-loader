@@ -15,7 +15,7 @@
     "testEnvironment": "node"
   },
   "peerDependencies": {
-    "typescript": "~3.3.1",
+    "typescript": "^3.7.4",
     "webpack": "^4.29.1"
   },
   "devDependencies": {
@@ -43,7 +43,7 @@
     "memory-fs": "^0.4.1",
     "source-map": "^0.6.1",
     "ts-loader": "^5.3.3",
-    "typescript": "~3.3.1",
+    "typescript": "~3.7.4",
     "webpack": "^4.29.1"
   },
   "dependencies": {
