@@ -37,7 +37,7 @@ test('It will correctly collapse unnecessary modules (tree shaking)', async () =
   })
 
   expect(output).toContain('myRealExport')
-})
+}, 10000);
 
 test('will work with closure compiler plugin', async () => {
   const externDir = path.resolve(__dirname, 'tmp', 'externs-' + Math.floor(Math.random() * 10))
