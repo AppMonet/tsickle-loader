@@ -48,6 +48,6 @@
   },
   "dependencies": {
     "fs-extra": "^7.0.1",
-    "tsickle": "^0.34.3"
+    "tsickle": "^0.38.0"
   }
 }

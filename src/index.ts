@@ -142,21 +142,18 @@ const tsickleLoader: webpack.loader.Loader = function(
 
   const jsFiles = new Map<string, string>();
 
-  const output = tsickle.emitWithTsickle(
-    program,
-    tsickleHost,
-    compilerHost,
-    options,
-    undefined,
-    (path: string, contents: string) => jsFiles.set(path, contents)
+  const output = tsickle.emit(
+      program,
+      tsickleHost,
+      (path: string, contents: string) => jsFiles.set(path, contents)
   );
 
   const sourceFileAsJs = tsToJS(sourceFileName);
   for (const [path, source] of jsFiles) {
     if (sourceFileAsJs.indexOf(path) === -1) {
       continue;
-    }
-
+  }
+  
     const tsPathName = jsToTS(path);
     const extern = output.externs[tsPathName];
     if (extern != null) {
