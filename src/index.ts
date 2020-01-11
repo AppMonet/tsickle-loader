@@ -6,7 +6,7 @@ import ts from "typescript";
 import { EOL } from "os";
 import webpack = require("webpack");
 import { fixCode, fixExtern } from "./fix-output";
-import { jsToTS, tsToJS } from "./path-utils";
+import {RawSourceMap} from "source-map";
 import validateOptions from 'schema-utils';
 import {JSONSchema7} from "schema-utils/declarations/validate";
 
@@ -141,32 +141,49 @@ const tsickleLoader: webpack.loader.Loader = function(
       handleDiagnostics(this, [warning], diagnosticsHost, "warning")
   };
 
-  const jsFiles = new Map<string, string>();
+  let transpiledSources: string[] = [];
+  let transpiledSourceMaps: string[] = [];
 
   const output = tsickle.emit(
       program,
       tsickleHost,
-      (path: string, contents: string) => jsFiles.set(path, contents)
+      (jsFileName: string, contents: string, _writeByteOrderMark: boolean, _onError, tsSourceFiles) => {
+        for (const source of tsSourceFiles ?? []) {
+          if (source.fileName === sourceFileName) {
+            if (jsFileName.endsWith('.map')) {
+              transpiledSourceMaps.push(contents);
+            } else {
+              transpiledSources.push(contents);
+            }
+          }
+        }
+      },
+      program.getSourceFile(sourceFileName)
   );
 
-  const sourceFileAsJs = tsToJS(sourceFileName);
-  for (const [path, source] of jsFiles) {
-    if (sourceFileAsJs.indexOf(path) === -1) {
-      continue;
+  if (transpiledSources.length !== 1) {
+    this.emitError(
+        Error(`missing compiled result for source file: ${sourceFileName}`)
+    );
+    return;
   }
-  
-    const tsPathName = jsToTS(path);
-    const extern = output.externs[tsPathName];
-    if (extern != null) {
-      fs.appendFileSync(externFile, fixExtern(extern));
-    }
-
-    return fixCode(source);
+  if (this.sourceMap && transpiledSourceMaps.length !== 1) {
+    this.emitError(
+        Error(`tsconfig must specify sourceMap: "true" when sourcemaps are enabled!`)
+    );
+    return;
   }
 
-  this.emitError(
-    Error(`missing compiled result for source file: ${sourceFileName}`)
-  );
+  const extern = output.externs[sourceFileName];
+  if (extern != null) {
+    fs.appendFileSync(externFile, fixExtern(extern));
+  }
+
+  let sourceMap: RawSourceMap|undefined = undefined;
+  if (this.sourceMap) {
+    sourceMap = JSON.parse(transpiledSourceMaps[0]);
+  }
+  this.callback(null, fixCode(transpiledSources[0]), sourceMap);
 };
 
 export default tsickleLoader;

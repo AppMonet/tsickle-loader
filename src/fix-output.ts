@@ -9,12 +9,13 @@ export const fixCode = (code: string): string => {
           /(?:const|var)\s*.*tsickle_.*\s*=\s*goog\.requireType.*/g,
           ""
       )
-    .replace(
-      /(?:const|var)\s*.*tsickle_forward_declare_.*\s*=\s*goog\.forwardDeclare.*/g,
-      ""
-    )
-    .replace(/goog\.require.*/g, "")
-    .replace(/tsickle_forward_declare_\d\./g, "");
+      .replace(
+          /(?:const|var)\s*.*tsickle_forward_declare_.*\s*=\s*goog\.forwardDeclare.*/g,
+          ""
+      )
+      .replace(/goog\.require.*/g, "")
+      .replace(/tsickle_forward_declare_\d\./g, "")
+      .replace(/\/\/# sourceMappingURL=.*\.js\.map/g, "");
 };
 
 /**
