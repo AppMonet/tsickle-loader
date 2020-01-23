@@ -1,34 +1,35 @@
 import fs from "fs-extra";
 import * as path from "path";
 import { getOptions, OptionObject } from "loader-utils";
-import validateOptions = require("schema-utils");
 import tsickle = require("tsickle");
 import ts from "typescript";
 import { EOL } from "os";
 import webpack = require("webpack");
 import { fixCode, fixExtern } from "./fix-output";
-import { jsToTS, tsToJS } from "./path-utils";
+import {RawSourceMap} from "source-map";
+import validateOptions from 'schema-utils';
+import {JSONSchema7} from "schema-utils/declarations/validate";
 
 const LOADER_NAME = "tsickle-loader";
 const DEFAULT_EXTERN_DIR = "dist/externs";
 const EXTERNS_FILE_NAME = "externs.js";
 const DEFAULT_CONFIG_FILE = "tsconfig.json";
 
-const optionsSchema = {
-  type: "object",
+const optionsSchema: JSONSchema7 = {
+  type: 'object',
   properties: {
     tsconfig: {
       anyOf: [
         {
-          type: "string"
+          type: 'string'
         },
         {
-          type: "boolean"
+          type: 'boolean'
         }
       ]
     },
     externDir: {
-      type: "string"
+      type: 'string'
     }
   }
 };
@@ -42,7 +43,7 @@ interface RealOptions extends OptionObject {
 
 const setup = (loaderCTX: webpack.loader.LoaderContext): RealOptions => {
   const options = getOptions(loaderCTX);
-  validateOptions(optionsSchema, options, LOADER_NAME);
+  validateOptions(optionsSchema, options, {name: LOADER_NAME});
 
   const externDir =
     options.externDir != null ? options.externDir : DEFAULT_EXTERN_DIR;
@@ -64,7 +65,7 @@ const setup = (loaderCTX: webpack.loader.LoaderContext): RealOptions => {
   const compilerConfig = ts.parseJsonConfigFileContent(
     compilerConfigFile.config,
     ts.sys,
-    ".",
+      path.dirname(tsconfig || ''),
     {},
     tsconfig
   );
@@ -140,35 +141,49 @@ const tsickleLoader: webpack.loader.Loader = function(
       handleDiagnostics(this, [warning], diagnosticsHost, "warning")
   };
 
-  const jsFiles = new Map<string, string>();
+  let transpiledSources: string[] = [];
+  let transpiledSourceMaps: string[] = [];
 
-  const output = tsickle.emitWithTsickle(
-    program,
-    tsickleHost,
-    compilerHost,
-    options,
-    undefined,
-    (path: string, contents: string) => jsFiles.set(path, contents)
+  const output = tsickle.emit(
+      program,
+      tsickleHost,
+      (jsFileName: string, contents: string, _writeByteOrderMark: boolean, _onError, tsSourceFiles) => {
+        for (const source of tsSourceFiles ?? []) {
+          if (source.fileName === sourceFileName) {
+            if (jsFileName.endsWith('.map')) {
+              transpiledSourceMaps.push(contents);
+            } else {
+              transpiledSources.push(contents);
+            }
+          }
+        }
+      },
+      program.getSourceFile(sourceFileName)
   );
 
-  const sourceFileAsJs = tsToJS(sourceFileName);
-  for (const [path, source] of jsFiles) {
-    if (sourceFileAsJs.indexOf(path) === -1) {
-      continue;
-    }
-
-    const tsPathName = jsToTS(path);
-    const extern = output.externs[tsPathName];
-    if (extern != null) {
-      fs.appendFileSync(externFile, fixExtern(extern));
-    }
-
-    return fixCode(source);
+  if (transpiledSources.length !== 1) {
+    this.emitError(
+        Error(`missing compiled result for source file: ${sourceFileName}`)
+    );
+    return;
+  }
+  if (this.sourceMap && transpiledSourceMaps.length !== 1) {
+    this.emitError(
+        Error(`tsconfig must specify sourceMap: "true" when sourcemaps are enabled!`)
+    );
+    return;
   }
 
-  this.emitError(
-    Error(`missing compiled result for source file: ${sourceFileName}`)
-  );
+  const extern = output.externs[sourceFileName];
+  if (extern != null) {
+    fs.appendFileSync(externFile, fixExtern(extern));
+  }
+
+  let sourceMap: RawSourceMap|undefined = undefined;
+  if (this.sourceMap) {
+    sourceMap = JSON.parse(transpiledSourceMaps[0]);
+  }
+  this.callback(null, fixCode(transpiledSources[0]), sourceMap);
 };
 
 export default tsickleLoader;

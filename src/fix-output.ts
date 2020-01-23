@@ -1,22 +1,27 @@
 /**
  * Fix some common issues with the tsickle output
- * @param code {string} the transformed typescript code
+ * @param {string} code the transformed typescript code
  * @return {string} transformed code
  */
 export const fixCode = (code: string): string => {
   return code
-    .replace(
-      /(?:const|var)\s*.*tsickle_forward_declare_.*\s*=\s*goog\.forwardDeclare.*/g,
-      ""
-    )
-    .replace(/goog\.require.*/g, "")
-    .replace(/tsickle_forward_declare_\d\./g, "");
+      .replace(
+          /(?:const|var)\s*.*tsickle_.*\s*=\s*goog\.requireType.*/g,
+          ""
+      )
+      .replace(
+          /(?:const|var)\s*.*tsickle_forward_declare_.*\s*=\s*goog\.forwardDeclare.*/g,
+          ""
+      )
+      .replace(/goog\.require.*/g, "")
+      .replace(/tsickle_forward_declare_\d\./g, "")
+      .replace(/\/\/# sourceMappingURL=.*\.js\.map/g, "");
 };
 
 /**
  * Fix some issues with the tsickle extern file definition specific
  * to typescript-in-webpack
- * @param extern {string} the extern definition file content
+ * @param {string} extern the extern definition file content
  * @return {string} transformed code
  */
 export const fixExtern = (extern: string | null): string => {
