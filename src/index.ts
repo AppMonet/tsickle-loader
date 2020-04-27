@@ -8,6 +8,7 @@ import { EOL } from "os";
 import webpack = require("webpack");
 import { fixCode, fixExtern } from "./fix-output";
 import { jsToTS, tsToJS } from "./path-utils";
+import { TcpSocketConnectOpts } from "net";
 
 const LOADER_NAME = "tsickle-loader";
 const DEFAULT_EXTERN_DIR = "dist/externs";
@@ -137,7 +138,7 @@ const tsickleLoader: webpack.loader.Loader = function(
     transformTypesToClosure: true,
     typeBlackListPaths: new Set(),
     untyped: false,
-    logWarning: (warning: unknown) =>
+    logWarning: warning =>
       handleDiagnostics(this, [warning], diagnosticsHost, "warning")
   };
 
@@ -161,11 +162,13 @@ const tsickleLoader: webpack.loader.Loader = function(
     const tsPathName = jsToTS(path);
     const extern = output.externs[tsPathName];
     if (extern != null) {
-      console.info(`appending extern for ${path} to::\n${extern}\n`);
+      // console.info(`appending extern for ${path} to (${externFile}) ::\n${extern}\n`);
       fs.appendFileSync(externFile, fixExtern(extern));
     }
 
-    return fixCode(source);
+    const fixed = fixCode(source);
+    // console.info("FIXED CODE:: \n", fixed);
+    return fixed;
   }
 
   this.emitError(

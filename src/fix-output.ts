@@ -5,13 +5,15 @@
  */
 export const fixCode = (code: string): string => {
   return code
+    .replace(/^\s*var\s*tsickle.+=.*goog\.requireType.*$/g, "")
     .replace(
       /(?:const|var)\s*.*tsickle_forward_declare_.*\s*=\s*goog\.forwardDeclare.*/g,
       ""
     )
     .replace(/!\.(\w)/gm, "!$1")
     .replace(/goog\.require.*/gm, "")
-    .replace(/tsickle_forward_declare_\d\./gm, "");
+    .replace(/tsickle_forward_declare_\d\./gm, "")
+    .replace(/var\s* tsickle_.+=\s+/g, "");
 };
 
 /**
@@ -30,6 +32,7 @@ export const fixExtern = (extern: string | null): string => {
     .replace(/!\.(\w)/gm, "!$1")
     .replace(/^\.(\w+\s+=\s+{}\s*;?\s*$)/gm, "var $1")
     .replace(/^\.(\w+\s+=\s+function.+$)/gm, "var $1")
+    .replace(/^\.(\w+\s*;\s*$)/gm, "var $1")
     .replace(/^\./gm, "");
 
   return fixed.replace(/([<{])!\.(\w)/gm, "$1!$2");
