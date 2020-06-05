@@ -1,6 +1,6 @@
 # @appmonet/tsickle-loader
 
-This is a webpack loader for [tsickle](https://github.com/angular/tsickle); it lets us compile typescript code with the `typescript` compilaer, while adding annotations & externs readable by closure compiler, which means we can use `ADVANCED_OPTIMIZATIONS` mode. See the [`test`](/test/compiler.js) directory for an example of compiling this way.
+This is a webpack loader for [tsickle](https://github.com/angular/tsickle); it lets us compile typescript code with the `typescript` compiler, while adding annotations & externs readable by closure compiler, which means we can use `ADVANCED_OPTIMIZATIONS` mode. See the [`test`](/test/compiler.js) directory for an example of compiling this way.
 
 ## usage
 
